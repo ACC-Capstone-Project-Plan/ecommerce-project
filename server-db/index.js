@@ -8,14 +8,13 @@ app.use(express.json());
 const connectDB = require('./connectMongo');
 connectDB();
 
-const ProductModel = require('./models/products');
+const products = require('./models/products');
 
-app.get('/products', async (req, res) => {
+app.get('/', async (req, res) => {
     try {
-        const data = await ProductModel.find();
         return res.status(200).json({
             msg: 'OK',
-            data
+            data: products,
         });
     } catch (error) {
         return res.status(500).json({
@@ -24,31 +23,31 @@ app.get('/products', async (req, res) => {
     }
 });
 
-app.get('/products/:id', async (req, res) => {
+app.get('/product/:id', async (req, res) => {
     try {
-        const data = await ProductModel.findById(req.params.id);
-        
+        const data = await products.findById(req.params.id);
+
         if (data) {
             return res.status(200).json({
                 msg: 'OK',
                 data
             });
         }
-        
+
         return res.status(404).json({
             msg: 'Not Found',
         });
     } catch (error) {
         return res.status(500).json({
-            msg: error.message
+            msg: error.message,
         });
     }
 });
 
-app.post('/products', async (req, res) => {
+app.post('/', async (req, res) => {
     try {
         const { title, price, description, category, image } = req.body;
-        const product = new ProductModel({
+        const product = new products({
             title,
             price,
             description,
@@ -69,7 +68,7 @@ app.post('/products', async (req, res) => {
 
 app.delete('/products/:id', async (req, res) => {
     try {
-        await ProductModel.findByIdAndDelete(req.params.id);
+        await products.findByIdAndDelete(req.params.id); 
         return res.status(200).json({
             msg: 'Ok',
         });
