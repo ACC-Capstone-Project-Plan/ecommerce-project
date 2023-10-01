@@ -1,35 +1,25 @@
-const BASE_URL = 'http://localhost:5000';
+const apiUrl = 'https://ecommerce-acc-api.onrender.com/';
 
-export const login = async (loginData) => {
+
+async function fetchProductList() {
   try {
-    const response = await fetch(`${BASE_URL}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(loginData),
-    });
-
-    if (response.status === 200) {
-      return response.json();
-    } else {
-      throw new Error('Login failed. Please check your credentials.');
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+      throw new Error(`Request failed with status: ${response.status}`);
     }
+    
+    const data = await response.json();
+    displayProductList(data);
   } catch (error) {
-    throw error;
+    console.error('Error fetching product list:', error);
   }
-};
+}
 
-export const fetchUserCart = async (userId) => {
-  try {
-    const response = await fetch(`${BASE_URL}/my-cart?userId=${userId}`);
+function displayProductList(products) {
 
-    if (response.status === 200) {
-      return response.json();
-    } else {
-      throw new Error('Failed to fetch user cart data.');
-    }
-  } catch (error) {
-    throw error;
-  }
-};
+  console.log('Product list:', products);
+}
+
+fetchProductList();
+

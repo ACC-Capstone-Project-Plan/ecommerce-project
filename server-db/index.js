@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -9,6 +10,9 @@ const connectDB = require('./connectMongo');
 connectDB();
 
 const products = require('./models/products');
+
+// Use the 'cors' middleware to enable CORS
+app.use(cors());
 
 app.get('/', async (req, res) => {
     try {

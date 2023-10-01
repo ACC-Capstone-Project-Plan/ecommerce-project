@@ -1,126 +1,54 @@
-import React, { useState } from 'react';
-import allProducts from '../data/productsData';
-import '../components/main.css';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
-function ProductList({ addToCart }) {
-  const productsPerPage = 5;
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [sortOrder, setSortOrder] = useState('asc');
+function ProductList() {
+  // Define state to store the list of products
+  const [products, setProducts] = useState([]);
 
-  const startIndex = (currentPage - 1) * productsPerPage;
+  // Define an effect to fetch the list of products when the component mounts
+  useEffect(() => {
+    fetchProductList();
+  }, []);
 
-  const filterAndSortProducts = () => {
-    let filteredProducts = allProducts.filter((product) =>
-      product.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  // Function to fetch the product list from the API
+  async function fetchProductList() {
+    try {
+      const response = await fetch('https://ecommerce-acc-api.onrender.com/');
 
-    if (selectedCategory) {
-      filteredProducts = filteredProducts.filter(
-        (product) => product.category === selectedCategory
-      );
+      // Check if the response status is OK (status code 200)
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
+
+      // Parse the JSON response
+      const data = await response.json();
+
+      // Update the products state with the fetched data
+      setProducts(data.data); // Assuming 'data' contains the products array
+    } catch (error) {
+      console.error('Error fetching product list:', error);
     }
-
-    if (sortOrder === 'asc') {
-      filteredProducts.sort((a, b) => a.price - b.price);
-    } else {
-      filteredProducts.sort((a, b) => b.price - a.price);
-    }
-
-    return filteredProducts;
-  };
-
-  const displayedProducts = filterAndSortProducts().slice(
-    startIndex,
-    startIndex + productsPerPage
-  );
-
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value);
-    setCurrentPage(1); // Reset page when category changes
-  };
-
-  const handleSortChange = (e) => {
-    setSortOrder(e.target.value);
-    setCurrentPage(1); // Reset page when sorting changes
-  };
-
-  const nextPage = () => {
-    const totalPages = Math.ceil(filterAndSortProducts().length / productsPerPage);
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleAddToCart = (product) => {
-    addToCart(product);
-  };
+  }
 
   return (
     <div className="all-products">
       <h1>Product List</h1>
+      {/* Add filters and other UI elements as needed */}
       <div className="filters">
         <div className="filter-selects">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <label htmlFor="category">Filter by Category: </label>
-          <select
-            id="category"
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-          >
-            <option value="">All Categories</option>
-            <option value="men's clothing">Men's Clothing</option>
-            <option value="ladies clothing">Women's Clothing</option>
-            <option value="electronics">Electronics</option>
-            <option value="jewelry">Jewelry</option>
-          </select>
-          <label htmlFor="sort">Sort by Price: </label>
-          <select id="sort" value={sortOrder} onChange={handleSortChange}>
-            <option value="asc">Low to High</option>
-            <option value="desc">High to Low</option>
-          </select>
+          {/* You can add filter controls here */}
         </div>
       </div>
+      {/* Display the list of products */}
       <div className="product-list">
-        {displayedProducts.map((product) => (
+        {products.map((product) => (
           <div key={product.id} className="product">
-            <Link to={`/product/${product.id}`} className="product-link">
-              <img src={product.image} alt={product.title} />
-              <h2>{product.title}</h2>
-              <p className="prod-price">${product.price.toFixed(2)}</p>
-            </Link>
-            <button
-              className="addtocart"
-              onClick={() => handleAddToCart(product)}
-            >
-              Add to Cart
-            </button>
+            <img src={product.image} alt={product.title} />
+            <h2>{product.title}</h2>
+            <p className="product-price">${product.price}</p>
+            <p>{product.description}</p>
+            <p>Category: {product.category}</p>
           </div>
         ))}
-      </div>
-      <div className="pagination">
-        <button onClick={prevPage} disabled={currentPage === 1}>
-          Previous Page
-        </button>
-        <button
-          onClick={nextPage}
-          disabled={startIndex + productsPerPage >= filterAndSortProducts().length}
-        >
-          Next Page
-        </button>
       </div>
     </div>
   );

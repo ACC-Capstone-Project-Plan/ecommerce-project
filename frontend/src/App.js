@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import ProductList from "./components/ProductsList";
-import ProductDetail from "./components/ProductsDetail";
 import Navbar from "./components/Navbar";
 import LoginForm from "./components/LoginForm";
 import Profile from "./components/profile";
@@ -103,7 +102,6 @@ function App() {
           <Route path="/" exact>
             <ProductList addToCart={addToCart} />
           </Route>
-          <Route path="/product/:productId" component={ProductDetail} />
           <Route
             path="/login"
             render={(props) => <LoginForm {...props} onLogin={handleLogin} />}
