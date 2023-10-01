@@ -17,8 +17,6 @@ async function fetchProductList() {
 }
 
 function displayProductList(products) {
-
-  console.log('Product list:', products);
 }
 
 fetchProductList();

@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const mongoose =require('mongoose')
 
 require('dotenv').config();
 
@@ -29,17 +30,30 @@ app.get('/', async (req, res) => {
 
 app.get('/product/:id', async (req, res) => {
     try {
-        const data = await products.findById(req.params.id);
+        const productId = req.params.id;
 
-        if (data) {
-            return res.status(200).json({
-                msg: 'OK',
-                data
+        // Check if productId is a positive integer
+        if (!/^[1-9]\d*$/.test(productId)) {
+            return res.status(400).json({
+                msg: 'Invalid product ID format',
             });
         }
 
-        return res.status(404).json({
-            msg: 'Not Found',
+        // Convert productId to an integer
+        const id = parseInt(productId);
+
+        // Find the product by ID in the data array
+        const product = products.find((p) => p.id === id);
+
+        if (!product) {
+            return res.status(404).json({
+                msg: 'Product not found',
+            });
+        }
+
+        return res.status(200).json({
+            msg: 'OK',
+            data: product,
         });
     } catch (error) {
         return res.status(500).json({
@@ -83,7 +97,7 @@ app.delete('/products/:id', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log('Server is running on port ' + PORT);
