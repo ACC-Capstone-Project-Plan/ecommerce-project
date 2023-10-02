@@ -3,6 +3,9 @@
   margin-top: 150px;
   margin-bottom: 50px;
   background-color: blanchedalmond;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeIn 1s ease-in-out forwards;
 }
 
 .all-products h1 {

@@ -6,30 +6,29 @@ function UserCart({ userId }) {
 
   useEffect(() => {
     const fetchUserCart = async () => {
-        try {
-          const response = await fetch(`/my-cart/${userId}`);
-      
-          if (!response.ok) {
-            throw new Error(
-              `Failed to fetch user cart data: ${response.status} ${response.statusText}`
-            );
-          }
-      
-          const data = await response.json();
-      
-          if (data.userCart) {
-            setUserCart(data.userCart);
-          } else {
-            setUserCart(null);
-          }
-      
-          setLoading(false);
-        } catch (error) {
-          console.error('Error fetching user cart:', error.message);
-          setLoading(false);
+      try {
+        const response = await fetch(`/my-cart/${userId}`);
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch user cart data: ${response.status} ${response.statusText}`
+          );
         }
-      };
-      
+
+        const data = await response.json();
+
+        if (data.userCart) {
+          setUserCart(data.userCart);
+        } else {
+          setUserCart(null);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user cart:", error.message);
+        setLoading(false);
+      }
+    };
 
     fetchUserCart();
   }, [userId]);

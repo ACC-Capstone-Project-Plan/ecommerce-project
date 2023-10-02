@@ -1,7 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 function Navbar({ user, onLogout }) {
+  const history = useHistory();
+
+  const handleLogout = () => {
+    // Call the onLogout function to clear the user
+    onLogout();
+
+    // Redirect the user to the /login route
+    history.push('/login');
+  };
+
   return (
     <div className="navbar">
       <div className="navbar-buttons">
@@ -15,19 +25,17 @@ function Navbar({ user, onLogout }) {
           <button className="Cart">Cart</button>
         </Link>
 
-        {/* Users button */}
-        <Link to="/profile">
-          <button className="users">Profile</button>
-        </Link>
-
-        {/* Conditionally render Login or Logout button */}
+        {/* Profile or Log In button */}
         {user ? (
-          <button className="login" onClick={onLogout}>
-            Log Out
-          </button>
+          <>
+            <Link to={`/user/${user}`}>
+              <button className="Profile">Profile</button>
+            </Link>
+            <button className="Logout" onClick={handleLogout}>Log Out</button>
+          </>
         ) : (
           <Link to="/login">
-            <button className="login">Login</button>
+            <button className="Login">Log In</button>
           </Link>
         )}
       </div>

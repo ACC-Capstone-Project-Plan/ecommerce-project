@@ -5,12 +5,20 @@ import Navbar from "./components/Navbar";
 import LoginForm from "./components/LoginForm";
 import Profile from "./components/profile";
 import Cart from "./components/Cart";
-import UserCart from "./components/userCart";
+import UserCart from "./components/userCart"
 import ProductDetails from "./components/ProductDetail";
 
 function App() {
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
+
+  // Function to load user data from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("userId");
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
 
   // Function to load cart data from localStorage
   useEffect(() => {
@@ -20,24 +28,13 @@ function App() {
     }
   }, []);
 
-  // Function to load user data from localStorage
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-    }
-  }, []);
-
-  const handleLogin = (userData) => {
-    setUser(userData);
-    // Save the user data to localStorage
-    localStorage.setItem("user", JSON.stringify(userData));
+  const handleLogin = (userId) => {
+    setUser(userId);
   };
 
   const handleLogout = () => {
     setUser(null);
-    // Remove the user data from localStorage on logout
-    localStorage.removeItem("user");
+    localStorage.removeItem("userId"); // Remove the user's login status
   };
 
   // Function to add a product to the cart
@@ -111,22 +108,13 @@ function App() {
             path="/my-cart/:userId"
             render={(props) =>
               user ? (
-                <UserCart {...props} userId={user.id} />
+                <UserCart {...props} userId={user} />
               ) : (
                 <Redirect to="/login" />
               )
             }
           />
-          <Route
-            path="/profile"
-            render={(props) =>
-              user ? (
-                <Profile {...props} user={user} onLogout={handleLogout} />
-              ) : (
-                <Redirect to="/login" />
-              )
-            }
-          />
+          <Route path="/user/:userId" component={Profile} />
           <Route path="/cart">
             <Cart
               cart={cart}

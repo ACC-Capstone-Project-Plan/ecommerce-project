@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 
 function Cart() {
   // Initialize the cart state by fetching data from localStorage
