@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const mongoose = require("mongoose");
 
 require("dotenv").config();
 
@@ -115,69 +114,69 @@ app.get("/users", async (req, res) => {
 
 // Register a new user
 app.post("/register", async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    // Check if the username is already taken
-    const existingUser = allUser.find((user) => user.username === username);
-    if (existingUser) {
-      return res.status(400).json({
-        msg: "Username already exists",
+    try {
+      const { username, password } = req.body;
+  
+      // Check if the username is already taken
+      const existingUser = allUser.find((user) => user.username === username);
+      if (existingUser) {
+        return res.status(400).json({
+          msg: "Username already exists",
+        });
+      }
+  
+      // Generate a salt for password hashing (you can configure the number of rounds)
+      const saltRounds = 10;
+      const salt = bcrypt.genSaltSync(saltRounds);
+  
+      // Hash the password
+      const hashedPassword = bcrypt.hashSync(password, salt);
+  
+      // Create a new user with the hashed password
+      const newUser = {
+        username,
+        password: hashedPassword,
+        // Include other user properties as needed
+      };
+  
+      // Add the new user to your user data array
+      allUser.push(newUser);
+  
+      return res.status(200).json({
+        msg: "User registered successfully",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        msg: error.message,
       });
     }
-
-    // Generate a salt for password hashing (you can configure the number of rounds)
-    const saltRounds = 10;
-    const salt = bcrypt.genSaltSync(saltRounds);
-
-    // Hash the password
-    const hashedPassword = bcrypt.hashSync(password, salt);
-
-    // Create a new user with the hashed password
-    const newUser = {
-      username,
-      password: hashedPassword,
-      // Include other user properties as needed
-    };
-
-    // Add the new user to your user data array
-    allUser.push(newUser);
-
-    return res.status(200).json({
-      msg: "User registered successfully",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      msg: error.message,
-    });
-  }
-});
-
-// Login
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-
-  // Check if username and password are present
-  if (!username || !password) {
-    return res.status(400).json({ msg: "Username and password are required" });
-  }
-
-  // Find a user with the matching username and password
-  const matchedUser = allUser.find(
-    (user) =>
-      user.username.trim() === username.trim() &&
-      user.password.trim() === password.trim()
-  );
-
-  if (matchedUser) {
-    // If a user is found, send back the userId
-    const userId = matchedUser.id;
-    res.status(200).json({ userId });
-  } else {
-    // If no matching user is found, send an error response
-    res.status(401).json({ msg: "Invalid username or password" });
-  }
-});
+  });
+  
+  // Login
+  app.post("/login", (req, res) => {
+    const { username, password } = req.body;
+  
+    // Check if username and password are present
+    if (!username || !password) {
+      return res.status(400).json({ msg: "Username and password are required" });
+    }
+  
+    // Find a user with the matching username and password
+    const matchedUser = allUser.find(
+      (user) =>
+        user.username.trim() === username.trim() &&
+        user.password.trim() === password.trim()
+    );
+  
+    if (matchedUser) {
+      // If a user is found, send back the userId
+      const userId = matchedUser.id;
+      res.status(200).json({ userId });
+    } else {
+      // If no matching user is found, send an error response
+      res.status(401).json({ msg: "Invalid username or password" });
+    }
+  });
 
 app.get("/user/:id", async (req, res) => {
   try {
