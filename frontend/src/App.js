@@ -6,6 +6,7 @@ import LoginForm from "./components/LoginForm";
 import Profile from "./components/profile";
 import Cart from "./components/Cart";
 import UserCart from "./components/userCart";
+import ProductDetails from "./components/ProductDetail";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -133,6 +134,7 @@ function App() {
               updateQuantity={updateQuantity}
             />
           </Route>
+          <Route path="/product/:id" component={ProductDetails} />
         </div>
       </div>
     </Router>

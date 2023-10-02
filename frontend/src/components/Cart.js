@@ -1,77 +1,84 @@
-import React, { useEffect } from 'react';
+import React, { useState } from "react";
 
-function Cart({ cart, removeFromCart, updateQuantity }) {
-  const totalPrice = cart.reduce(
-    (total, item) => total + item.product.price * item.quantity,
+function Cart() {
+  // Initialize the cart state by fetching data from localStorage
+  const [cart, setCart] = useState(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    return storedCart;
+  });
+
+  // Function to update the cart in both state and localStorage
+  const updateCart = (newCart) => {
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  };
+
+
+  // Function to remove a product from the cart
+  const removeFromCart = (productId) => {
+    const updatedCart = cart.filter((item) => item.product.id !== productId);
+    updateCart(updatedCart);
+  };
+
+  // Function to update the quantity of a product in the cart
+  const updateQuantity = (productId, newQuantity) => {
+    const updatedCart = cart.map((item) =>
+      item.product.id === productId ? { ...item, quantity: newQuantity } : item
+    );
+    updateCart(updatedCart);
+  };
+
+  // Calculate the total price of the cart
+  const total = cart.reduce(
+    (acc, item) => acc + item.product.price * item.quantity,
     0
   );
 
-  // Define a memoized callback for updating the cart data in localStorage
-  const updateCartInLocalStorage = (updatedCart) => {
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-  };
-
-  useEffect(() => {
-    // Load the cart data from localStorage when the component mounts
-    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    // Update the cart with the stored data
-    updateQuantity(storedCart);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleIncrement = (productId) => {
-    // Find the cart item by productId
-    const cartItem = cart.find((item) => item.product.id === productId);
-    if (cartItem) {
-      // Update the quantity by 1
-      updateQuantity(productId, cartItem.quantity + 1);
-
-      // Update localStorage with the new cart data
-      updateCartInLocalStorage(cart);
-    }
-  };
-
-  const handleDecrement = (productId) => {
-    // Find the cart item by productId
-    const cartItem = cart.find((item) => item.product.id === productId);
-    if (cartItem && cartItem.quantity > 1) {
-      // Update the quantity by -1
-      updateQuantity(productId, cartItem.quantity - 1);
-
-      // Update localStorage with the new cart data
-      updateCartInLocalStorage(cart);
-    }
-  };
-
   return (
     <div className="cart">
-      <h1 className={`cart-title ${cart.length > 0 ? 'glow' : ''}`}>Shopping Cart</h1>
-      <div className="cart-content">
+      <h2>Shopping Cart</h2>
+      <div className="cart-items">
         {cart.length === 0 ? (
           <p>Your cart is empty.</p>
         ) : (
-          <div>
-            {cart.map((item) => (
-              <div key={item.product.id} className="cart-item">
-                <div className="cart-item-info">
-                  <img src={item.product.image} alt={item.product.title} />
+          cart.map((item) => (
+            <div key={item.product.id} className="cart-item">
+              <div className="product-details">
+                <img src={item.product.image} alt={item.product.title} />
+                <div>
                   <h3>{item.product.title}</h3>
-                  <p>Price: ${item.product.price.toFixed(2)}</p>
-                  <p className="prod-quantity">
-                    Quantity: {item.quantity}{' '}
-                    <button onClick={() => handleDecrement(item.product.id)}>-</button>
-                    <button onClick={() => handleIncrement(item.product.id)}>+</button>
+                  <p>
+                    Rating: {item.product.rating.rate} (
+                    {item.product.rating.count} reviews)
                   </p>
                 </div>
-                <button onClick={() => removeFromCart(item.product.id)}>Remove</button>
               </div>
-            ))}
-            <p>Total Price: ${totalPrice.toFixed(2)}</p>
-          </div>
+              <div className="quantity-controls">
+                <button
+                  onClick={() =>
+                    updateQuantity(item.product.id, item.quantity - 1)
+                  }
+                >
+                  -
+                </button>
+                {item.quantity}
+                <button
+                  onClick={() =>
+                    updateQuantity(item.product.id, item.quantity + 1)
+                  }
+                >
+                  +
+                </button>
+              </div>
+              <span>${item.product.price * item.quantity}</span>
+              <button onClick={() => removeFromCart(item.product.id)}>
+                Remove
+              </button>
+            </div>
+          ))
         )}
       </div>
+      <p>Total: ${total}</p>
     </div>
   );
 }

@@ -1,27 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import './main.css'
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./main.css";
 
 function ProductList() {
-  const [products, setProducts] = useState([]); // Store all products
-  const [currentPage, setCurrentPage] = useState(1); // Current page number
-  const [productsPerPage] = useState(5); // Number of products to display per page
-  const [categoryFilter, setCategoryFilter] = useState(''); // Category filter
-  const [sortOrder, setSortOrder] = useState('asc'); // Sort order ('asc' or 'desc')
-  const [searchTerm, setSearchTerm] = useState(''); // Search term
+  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(5);
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [cart, setCart] = useState([]);
 
-  // Define the available category options
   const availableCategories = [
     "men's clothing",
-    'jewelery',
-    'electronics',
+    "jewelry",
+    "electronics",
     "women's clothing",
   ];
 
-  // Calculate the index of the last product on the current page
   const indexOfLastProduct = currentPage * productsPerPage;
-  // Calculate the index of the first product on the current page
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  // Get the products to display on the current page
   const currentProducts = products
     .filter((product) =>
       product.category.toLowerCase().includes(categoryFilter.toLowerCase())
@@ -30,7 +28,7 @@ function ProductList() {
       product.title.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
-      if (sortOrder === 'asc') {
+      if (sortOrder === "asc") {
         return a.price - b.price;
       } else {
         return b.price - a.price;
@@ -44,14 +42,14 @@ function ProductList() {
 
   async function fetchProductList() {
     try {
-      const response = await fetch('https://ecommerce-acc-api.onrender.com/');
+      const response = await fetch("https://ecommerce-acc-api.onrender.com/");
       if (!response.ok) {
         throw new Error(`Request failed with status: ${response.status}`);
       }
       const data = await response.json();
       setProducts(data.data);
     } catch (error) {
-      console.error('Error fetching product list:', error);
+      console.error("Error fetching product list:", error);
     }
   }
 
@@ -79,11 +77,32 @@ function ProductList() {
     setSortOrder(e.target.value);
   };
 
-  // Function to handle search term change
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
+  const addToCart = (product) => {
+    console.log("Adding product to cart:", product);
+    const existingProductIndex = cart.findIndex(
+      (item) => item.product.id === product.id
+    );
+  
+    if (existingProductIndex !== -1) {
+      setCart((prevCart) => {
+        const updatedCart = [...prevCart];
+        updatedCart[existingProductIndex].quantity += 1;
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+        return updatedCart;
+      });
+    } else {
+      setCart((prevCart) => {
+        const updatedCart = [...prevCart, { product, quantity: 1 }];
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+        return updatedCart;
+      });
+    }
+  };
+  
   return (
     <div className="all-products">
       <h1>Product List</h1>
@@ -103,16 +122,13 @@ function ProductList() {
             ))}
           </select>
           <label htmlFor="sortOrder">Sort:</label>
-          <select
-            id="sortOrder"
-            value={sortOrder}
-            onChange={handleSortChange}
-          >
+          <select id="sortOrder" value={sortOrder} onChange={handleSortChange}>
             <option value="asc">Low to High</option>
             <option value="desc">High to Low</option>
           </select>
           <label htmlFor="searchTerm">Search:</label>
-          <input className='search-bar'
+          <input
+            className="search-bar"
             type="text"
             id="searchTerm"
             value={searchTerm}
@@ -122,10 +138,19 @@ function ProductList() {
       </div>
       <div className="product-list">
         {currentProducts.map((product) => (
-          <div key={product.id} className="product">
-            <img src={product.image} alt={product.title} />
-            <h2>{product.title}</h2>
-            <p className="prod-price">${product.price}</p>
+          <div className="product" key={product.id}>
+            <Link to={`/product/${product.id}`} className="product-link">
+              <img src={product.image} alt={product.title} />
+              <h1>{product.title}</h1>
+              <p className="prod-price">${product.price}</p>
+              <p>Rating: {product.rating.rate} ({product.rating.count} reviews)</p>
+            </Link>
+            <button
+              onClick={() => addToCart(product)}
+              className="add-to-cart-button"
+            >
+              Add to Cart
+            </button>
           </div>
         ))}
       </div>
@@ -135,7 +160,9 @@ function ProductList() {
         </button>
         <button
           onClick={nextPage}
-          disabled={currentPage === Math.ceil(products.length / productsPerPage)}
+          disabled={
+            currentPage === Math.ceil(products.length / productsPerPage)
+          }
         >
           Next Page
         </button>
