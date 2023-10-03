@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import ProductList from "./components/ProductsList";
 import Navbar from "./components/Navbar";
 import LoginForm from "./components/LoginForm";
 import Profile from "./components/profile";
 import Cart from "./components/Cart";
-import UserCart from "./components/userCart"
 import ProductDetails from "./components/ProductDetail";
 
 function App() {
@@ -103,16 +102,6 @@ function App() {
           <Route
             path="/login"
             render={(props) => <LoginForm {...props} onLogin={handleLogin} />}
-          />
-          <Route
-            path="/my-cart/:userId"
-            render={(props) =>
-              user ? (
-                <UserCart {...props} userId={user} />
-              ) : (
-                <Redirect to="/login" />
-              )
-            }
           />
           <Route path="/user/:userId" component={Profile} />
           <Route path="/cart">
