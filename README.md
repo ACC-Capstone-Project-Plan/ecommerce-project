@@ -74,6 +74,8 @@ Implement user authentication using JWT (JSON Web Tokens) or any other method of
 
 ## Project Structure
 `frontend` and backend I named it `server-db`
+Frontend: https://ecommerce-project-fakestore.netlify.app/
+Backend: https://ecommerce-acc-api.onrender.com/
 
 ## Deployment
 I used Render.com to deploy my `server-db` and Netfly for `frontend`
