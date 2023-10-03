@@ -22,13 +22,12 @@ The `frontend` folder contains the client-side code for the eCommerce web applic
 5. Open your web browser and access the application at `http://localhost:3000`.
 
 ### Features
-- User Registration and Login
+- User Login
 - Browse Product Catalog
 - Add Products to Cart
-- View and Edit Cart
 - User Profile
 - Product Details
-- ... (List other features of your frontend here)
+
 
 ## Server-DB
 
