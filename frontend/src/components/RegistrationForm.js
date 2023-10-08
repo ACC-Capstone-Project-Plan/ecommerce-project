@@ -7,6 +7,22 @@ const RegistrationForm = ({ onRegister }) => {
     username: "",
     password: "",
     confirmPassword: "",
+    name: {
+      firstname: "",
+      lastname: "",
+    },
+    email: "",
+    phone: "",
+    address: {
+      geolocation: {
+        lat: "",
+        long: "",
+      },
+      city: "",
+      street: "",
+      number: "",
+      zipcode: "",
+    },
   });
   const [error, setError] = useState(null);
 
@@ -24,10 +40,7 @@ const RegistrationForm = ({ onRegister }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password,
-        }),
+        body: JSON.stringify(formData), // Send the entire formData object
       });
 
       if (response.ok) {
@@ -83,6 +96,117 @@ const RegistrationForm = ({ onRegister }) => {
               id="confirmPassword"
               name="confirmPassword"
               value={formData.confirmPassword}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          {/* Add fields for name, email, phone, and address */}
+          <div>
+            <label htmlFor="firstname">First Name:</label>
+            <input
+              type="text"
+              id="firstname"
+              name="name.firstname"
+              value={formData.name.firstname}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="lastname">Last Name:</label>
+            <input
+              type="text"
+              id="lastname"
+              name="name.lastname"
+              value={formData.name.lastname}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="phone">Phone:</label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="lat">Latitude:</label>
+            <input
+              type="text"
+              id="lat"
+              name="address.geolocation.lat"
+              value={formData.address.geolocation.lat}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="long">Longitude:</label>
+            <input
+              type="text"
+              id="long"
+              name="address.geolocation.long"
+              value={formData.address.geolocation.long}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="city">City:</label>
+            <input
+              type="text"
+              id="city"
+              name="address.city"
+              value={formData.address.city}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="street">Street:</label>
+            <input
+              type="text"
+              id="street"
+              name="address.street"
+              value={formData.address.street}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="number">Street Number:</label>
+            <input
+              type="text"
+              id="number"
+              name="address.number"
+              value={formData.address.number}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="zipcode">Zipcode:</label>
+            <input
+              type="text"
+              id="zipcode"
+              name="address.zipcode"
+              value={formData.address.zipcode}
               onChange={handleInputChange}
               required
             />

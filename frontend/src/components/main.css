@@ -85,7 +85,7 @@
   color: #000000;
 }
 
-.product-link  {
+.product-link {
   font-size: medium;
   text-decoration: none;
   color: skyblue;
@@ -288,7 +288,6 @@ button:hover {
   text-align: center;
 }
 
-
 /* LoginForm */
 .loginForm {
   display: flex;
@@ -354,6 +353,8 @@ button:hover {
 .registrationForm-content label {
   color: black;
   font-family: Georgia, "Times New Roman", Times, serif;
+  display: block;
+  margin-bottom: 5px;
 }
 
 .registrationForm-content input {
@@ -362,6 +363,7 @@ button:hover {
   border-radius: 8px solid;
   padding: 5px;
   margin-top: 10px;
+  width: 100%;
 }
 
 .registrationForm-content button {
@@ -369,8 +371,28 @@ button:hover {
   box-shadow: 0 2px 4px rgb(0, 0, 0);
   border-radius: 8px;
   margin-top: 10px;
+  width: 100%;
 }
 
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.registrationForm-content div label[for="firstname"],
+.registrationForm-content div label[for="lastname"],
+.registrationForm-content div label[for="email"],
+.registrationForm-content div label[for="phone"],
+.registrationForm-content div label[for="lat"],
+.registrationForm-content div label[for="long"],
+.registrationForm-content div label[for="city"],
+.registrationForm-content div label[for="street"],
+.registrationForm-content div label[for="number"],
+.registrationForm-content div label[for="zipcode"] {
+  margin-top: 20px;
+  border-color: #000000;
+}
 
 /* Cart Page */
 .cart {
@@ -399,16 +421,16 @@ button:hover {
 }
 
 .cart-item img {
- max-width: 100%;
- max-width: 300px;
- display: flex;
- flex-direction: column;
- justify-content: center;
- align-items: center;
- background-color: rgb(48, 70, 48);
- color: white;
- padding: 10px 20px;
- border-radius: 8px;
+  max-width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(48, 70, 48);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
 }
 
 .cart-item p {
