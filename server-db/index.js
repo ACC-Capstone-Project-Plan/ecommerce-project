@@ -1,4 +1,4 @@
-const app = express();
+const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
@@ -8,12 +8,13 @@ require("dotenv").config();
 app.use(express.json());
 const connectDB = require("./connectMongo");
 connectDB();
-const products = require("./models/products");
+const products = require("./models/products")
 const allUser = require("./models/users");
 
 app.use(cors());
 app.get("/", async (req, res) => {
   try {
+    const products = await products.find();
     return res.status(200).json({
       msg: "OK",
       data: products,
@@ -24,6 +25,7 @@ app.get("/", async (req, res) => {
     });
   }
 });
+
 
 
 app.get("/product/:id", async (req, res) => {
@@ -41,7 +43,7 @@ app.get("/product/:id", async (req, res) => {
     const id = parseInt(productId);
 
     // Find the product by ID in the database
-    const product = await Product.findById(id);
+    const product = await product.findById(id);
 
     if (!product) {
       return res.status(404).json({
@@ -61,7 +63,7 @@ app.get("/product/:id", async (req, res) => {
 app.post("/products", async (req, res) => {
   try {
     const { title, price, description, category, image } = req.body;
-    const product = new Product({
+    const product = new product({
       title,
       price,
       description,
@@ -80,7 +82,7 @@ app.post("/products", async (req, res) => {
 
 app.delete("/products/:id", async (req, res) => {
   try {
-    await Product.findByIdAndDelete(req.params.id);
+    await products.findByIdAndDelete(req.params.id);
     return res.status(204).end();
   } catch (error) {
     next(error);
@@ -90,7 +92,7 @@ app.delete("/products/:id", async (req, res) => {
 // All Users
 app.get("/users", async (req, res) => {
   try {
-    const users = await User.find({}, "-password"); // Exclude password field
+    const users = await users.find({}, "-password");
     return res.status(200).json({
       msg: "OK",
       data: users,
