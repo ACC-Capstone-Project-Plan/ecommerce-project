@@ -5,11 +5,13 @@ const mongoose = require("mongoose");
 
 require("dotenv").config();
 
+const app = express();
+
 app.use(express.json());
 const connectDB = require("./connectMongo");
 connectDB();
-const products = require("./models/products")
-const allUser = require("./models/users");
+const Product = require("./models/products");
+const User = require("./models/users");
 
 app.use(cors());
 app.get("/", async (req, res) => {
@@ -25,8 +27,6 @@ app.get("/", async (req, res) => {
     });
   }
 });
-
-
 
 app.get("/product/:id", async (req, res) => {
   try {
