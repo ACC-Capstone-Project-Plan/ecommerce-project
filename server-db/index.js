@@ -23,17 +23,25 @@ app.use((err, req, res, next) => {
   res.status(500).json({ msg: "Internal Server Error" });
 });
 
-app.get('/', async (req, res) => {
+app.post('/', async (req, res) => {
   try {
-    const data = await Product.find(); // Assuming 'Product' is your Mongoose model
-    return res.status(200).json({
-      msg: 'OK',
-      data,
-    });
+      const { title, price, description, category, image } = req.body;
+      const product = new products({
+          title,
+          price,
+          description,
+          category,
+          image,
+      });
+      const data = await product.save();
+      return res.status(200).json({
+          msg: 'Ok',
+          data
+      });
   } catch (error) {
-    return res.status(500).json({
-      msg: error.message,
-    });
+      return res.status(500).json({
+          msg: error.message
+      });
   }
 });
 
