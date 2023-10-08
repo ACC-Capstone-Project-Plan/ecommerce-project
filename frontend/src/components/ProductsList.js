@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./main.css";
+import TopProducts from "./TopProducts";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
@@ -53,6 +54,16 @@ function ProductList() {
     }
   }
 
+  // Function to get the top 5 products by highest reviews
+  function getTopProducts(products, count) {
+    return products
+      .sort((a, b) => b.rating.rate - a.rating.rate)
+      .slice(0, count);
+  }
+
+  // Inside the ProductList component
+  const top5Products = getTopProducts(products, 5);
+
   // Function to handle next page
   const nextPage = () => {
     if (currentPage < Math.ceil(products.length / productsPerPage)) {
@@ -86,7 +97,7 @@ function ProductList() {
     const existingProductIndex = cart.findIndex(
       (item) => item.product.id === product.id
     );
-  
+
     if (existingProductIndex !== -1) {
       setCart((prevCart) => {
         const updatedCart = [...prevCart];
@@ -102,10 +113,10 @@ function ProductList() {
       });
     }
   };
-  
+
   return (
     <div className="all-products">
-      <h1>Product List</h1>
+      <TopProducts topProducts={top5Products} />
       <div className="filters">
         <div className="filter-selects">
           <label htmlFor="categoryFilter">Category:</label>

@@ -1,11 +1,11 @@
 .all-products {
   text-align: center;
-  margin-top: 150px;
   margin-bottom: 50px;
   background-color: blanchedalmond;
   opacity: 0;
   transform: translateY(-20px);
   animation: fadeIn 1s ease-in-out forwards;
+  min-height: 50vh;
 }
 
 .all-products h1 {
@@ -34,6 +34,7 @@
   opacity: 0;
   transform: translateY(-20px);
   animation: fadeIn 1s ease-in-out forwards;
+  min-height: 80vh;
 }
 
 .pagination button {
@@ -42,13 +43,13 @@
   box-shadow: 0 2px 4px rgb(0, 0, 0);
   border-radius: 8px;
   margin-right: 20px;
+  margin-bottom: 60px;
 }
 
 .product {
   text-decoration: none;
   color: black;
-  width: 250px;
-  height: 600px;
+  width: 150px;
   margin: 50px;
   border: 1px solid #000000;
   padding: 20px;
@@ -75,8 +76,8 @@
 }
 
 .product img {
-  max-width: 100%;
-  max-height: 350px;
+  max-width: 50%;
+  max-height: 250px;
 }
 
 .product h1 {
@@ -100,31 +101,53 @@
 
 .filters {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  opacity: 0;
-  transform: translateY(-20px);
-  animation: fadeIn 1s ease-in-out forwards;
+  align-items: center;
+  background-color: blanchedalmond;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 60px;
 }
+
 .filter-selects {
-  padding: 15px;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgb(0, 0, 0);
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .filter-selects label {
-  padding: 15px 5px 0px 20px;
-  border-radius: 8px;
-  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+  font-size: 16px;
 }
-.filter-selects input {
-  margin-left: 50px;
+
+.filter-selects select {
+  padding: 10px;
   border-radius: 8px;
+  border: 1px solid #000000;
   background-color: #fff;
-  box-shadow: 0 2px 4px rgb(0, 0, 0);
+  font-size: 14px;
+}
+
+.filter-selects .search-bar {
+  padding: 8px;
   border-radius: 8px;
+  border: 1px solid #000000;
+  background-color: #fff;
+  font-size: 14px;
+}
+
+.filter-selects button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.filter-selects button:hover {
+  background-color: #0056b3;
 }
 
 /*Product Detail*/
@@ -265,6 +288,8 @@ button:hover {
   text-align: center;
 }
 
+
+/* LoginForm */
 .loginForm {
   display: flex;
   justify-content: center;
@@ -273,6 +298,7 @@ button:hover {
   opacity: 0;
   transform: translateY(-20px);
   animation: fadeIn 1s ease-in-out forwards;
+  background-color: blanchedalmond;
 }
 
 .loginForm-content {
@@ -304,6 +330,48 @@ button:hover {
   margin-top: 10px;
 }
 
+/* RegistrationForm */
+.registrationForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeIn 1s ease-in-out forwards;
+  background-color: blanchedalmond;
+}
+
+.registrationForm-content {
+  max-width: 400px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgb(0, 0, 0);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.registrationForm-content label {
+  color: black;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.registrationForm-content input {
+  background-color: rgba(173, 228, 228, 0.658);
+  box-shadow: 2px solid black;
+  border-radius: 8px solid;
+  padding: 5px;
+  margin-top: 10px;
+}
+
+.registrationForm-content button {
+  background-color: mediumseagreen;
+  box-shadow: 0 2px 4px rgb(0, 0, 0);
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+
 /* Cart Page */
 .cart {
   display: flex;
@@ -315,6 +383,7 @@ button:hover {
   opacity: 0;
   transform: translateY(-20px);
   animation: fadeIn 1s ease-in-out forwards;
+  background-color: blanchedalmond;
 }
 
 .cart-item {
@@ -345,7 +414,7 @@ button:hover {
 .cart-item p {
   color: skyblue;
 }
-/* Add glowing animation */
+
 .cart-title.glow {
   animation: glow 1s infinite alternate;
 }

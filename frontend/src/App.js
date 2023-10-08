@@ -6,6 +6,7 @@ import LoginForm from "./components/LoginForm";
 import Profile from "./components/profile";
 import Cart from "./components/Cart";
 import ProductDetails from "./components/ProductDetail";
+import RegistrationForm from "./components/RegistrationForm";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -112,6 +113,7 @@ function App() {
             />
           </Route>
           <Route path="/product/:id" component={ProductDetails} />
+          <Route path="/register" component={RegistrationForm} />
         </div>
       </div>
     </Router>

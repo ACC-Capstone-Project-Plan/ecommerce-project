@@ -16,19 +16,6 @@ const allUser = require("./models/users");
 // Use the 'cors' middleware to enable CORS
 app.use(cors());
 
-app.get("/", async (req, res) => {
-  try {
-    return res.status(200).json({
-      msg: "OK",
-      data: products,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      msg: error.message,
-    });
-  }
-});
-
 app.get("/product/:id", async (req, res) => {
   try {
     const productId = req.params.id;

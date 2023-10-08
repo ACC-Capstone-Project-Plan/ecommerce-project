@@ -1,36 +1,38 @@
 import React, { useState } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-const LoginForm = ({ onLogin }) => {
+const RegistrationForm = ({ onRegister }) => {
   const history = useHistory();
-  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [error, setError] = useState(null);
-
-  // Function to handle successful login
-  const handleLoginSuccess = (userId) => {
-    // Save the user's login status in localStorage
-    localStorage.setItem("userId", userId);
-    // Trigger the onLogin function to update the user state in the App component
-    onLogin(userId);
-    // Redirect to the user's profile
-    history.push(`/user/${userId}`);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     try {
-      const response = await fetch("https://ecommerce-acc-api.onrender.com/login", {
+      const response = await fetch("https://ecommerce-acc-api.onrender.com/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        handleLoginSuccess(data.userId); // Call the success handler
+        onRegister();
+        history.push("/login");
       } else {
         const errorData = await response.json();
         setError(errorData.msg || "An error occurred");
@@ -47,9 +49,9 @@ const LoginForm = ({ onLogin }) => {
   };
 
   return (
-    <div className="loginForm">
-      <div className="loginForm-content">
-        <h2>Login</h2>
+    <div className="registrationForm">
+      <div className="registrationForm-content">
+        <h2>Register</h2>
         {error && <p className="error">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div>
@@ -74,15 +76,22 @@ const LoginForm = ({ onLogin }) => {
               required
             />
           </div>
-          <button type="submit">Login</button>
+          <div>
+            <label htmlFor="confirmPassword">Confirm Password:</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <button type="submit">Register</button>
         </form>
-        <p>
-          Not registered?{" "}
-          <Link to="/register">Click here to register</Link>
-        </p>
       </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default RegistrationForm;
