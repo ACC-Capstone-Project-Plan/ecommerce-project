@@ -1,49 +1,30 @@
-const express = require("express");
 const app = express();
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 require("dotenv").config();
 
 app.use(express.json());
-
 const connectDB = require("./connectMongo");
 connectDB();
+const products = require("./models/products");
+const allUser = require("./models/users");
 
-const Product = require("./models/products");
-const User = require("./models/users");
-
-// Use the 'cors' middleware to enable CORS
 app.use(cors());
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ msg: "Internal Server Error" });
-});
-
-app.post('/', async (req, res) => {
+app.get("/", async (req, res) => {
   try {
-      const { title, price, description, category, image } = req.body;
-      const product = new products({
-          title,
-          price,
-          description,
-          category,
-          image,
-      });
-      const data = await product.save();
-      return res.status(200).json({
-          msg: 'Ok',
-          data
-      });
+    return res.status(200).json({
+      msg: "OK",
+      data: products,
+    });
   } catch (error) {
-      return res.status(500).json({
-          msg: error.message
-      });
+    return res.status(500).json({
+      msg: error.message,
+    });
   }
 });
+
 
 app.get("/product/:id", async (req, res) => {
   try {
