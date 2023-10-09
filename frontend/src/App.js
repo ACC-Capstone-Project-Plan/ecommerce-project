@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import ProductList from "./components/ProductsList";
 import Navbar from "./components/Navbar";
 import LoginForm from "./components/LoginForm";
 import Profile from "./components/profile";
 import Cart from "./components/Cart";
 import ProductDetails from "./components/ProductDetail";
-import RegistrationForm from "./components/RegistrationForm";
 
 function App() {
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
-
-  // Function to load user data from localStorage
-  useEffect(() => {
-    const storedUser = localStorage.getItem("userId");
-    if (storedUser) {
-      setUser(storedUser);
-    }
-  }, []);
 
   // Function to load cart data from localStorage
   useEffect(() => {
@@ -28,13 +19,24 @@ function App() {
     }
   }, []);
 
-  const handleLogin = (userId) => {
-    setUser(userId);
+  // Function to load user data from localStorage
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+    // Save the user data to localStorage
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem("userId"); // Remove the user's login status
+    // Remove the user data from localStorage on logout
+    localStorage.removeItem("user");
   };
 
   // Function to add a product to the cart
@@ -104,7 +106,16 @@ function App() {
             path="/login"
             render={(props) => <LoginForm {...props} onLogin={handleLogin} />}
           />
-          <Route path="/user/:userId" render={(props) => <Profile user={user} />} />
+          <Route
+            path="/profile"
+            render={(props) =>
+              user ? (
+                <Profile {...props} user={user} onLogout={handleLogout} />
+              ) : (
+                <Redirect to="/login" />
+              )
+            }
+          />
           <Route path="/cart">
             <Cart
               cart={cart}
@@ -113,7 +124,6 @@ function App() {
             />
           </Route>
           <Route path="/product/:id" component={ProductDetails} />
-          <Route path="/register" component={RegistrationForm} />
         </div>
       </div>
     </Router>

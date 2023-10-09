@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { login } from "../api/api";
 
 function LoginForm({ onLogin }) {
   const [loginData, setLoginData] = useState({
     username: "",
     password: "",
   });
+
   const [error, setError] = useState(null);
   const history = useHistory();
 
@@ -17,36 +19,28 @@ function LoginForm({ onLogin }) {
     });
   };
 
+  const handleLoginSuccess = (user) => {
+    // Save the user's token in local storage
+    localStorage.setItem("userToken", user.token);
+
+    // Call the onLogin function to set the user in the app state
+    onLogin(user);
+
+    // Redirect to the profile page
+    history.push("/profile");
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      if (!loginData.username || !loginData.password) {
-        setError("Both username and password are required.");
-        return;
-      }
+      const response = await login(loginData);
 
-      // Send a POST request to your backend `/login` endpoint
-      const response = await fetch("/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
-
-      if (response.ok) {
-        // If login is successful, get the userId from the response
-        const data = await response.json();
-        const userId = data.userId;
-
-        // Call the onLogin function with the userId
-        onLogin(userId);
-
-        // Redirect to the user's profile page
-        history.push(`/user/${userId}`);
+      if (response.success) {
+        // Call the function for successful login
+        handleLoginSuccess(response.user);
       } else {
-        setError("Invalid username or password.");
+        setError("Login failed. Please check your credentials.");
       }
     } catch (error) {
       setError("An error occurred while logging in. Please try again later.");
