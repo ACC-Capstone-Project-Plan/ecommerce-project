@@ -1,22 +1,23 @@
 const express = require("express");
+const app = express();
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const mongoose = require("mongoose");
 
 require("dotenv").config();
 
-const app = express();
-
 app.use(express.json());
+
 const connectDB = require("./connectMongo");
 connectDB();
-const Product = require("./models/products");
-const User = require("./models/users");
 
+const products = require("./models/products");
+const allUser = require("./models/users");
+
+// Use the 'cors' middleware to enable CORS
 app.use(cors());
+
 app.get("/", async (req, res) => {
   try {
-    const products = await products.find();
     return res.status(200).json({
       msg: "OK",
       data: products,
@@ -42,8 +43,8 @@ app.get("/product/:id", async (req, res) => {
     // Convert productId to an integer
     const id = parseInt(productId);
 
-    // Find the product by ID in the database
-    const product = await product.findById(id);
+    // Find the product by ID in the data array
+    const product = products.find((p) => p.id === id);
 
     if (!product) {
       return res.status(404).json({
@@ -56,14 +57,16 @@ app.get("/product/:id", async (req, res) => {
       data: product,
     });
   } catch (error) {
-    next(error); // Pass the error to the error handling middleware
+    return res.status(500).json({
+      msg: error.message,
+    });
   }
 });
 
-app.post("/products", async (req, res) => {
+app.post("/", async (req, res) => {
   try {
     const { title, price, description, category, image } = req.body;
-    const product = new product({
+    const product = new products({
       title,
       price,
       description,
@@ -71,115 +74,118 @@ app.post("/products", async (req, res) => {
       image,
     });
     const data = await product.save();
-    return res.status(201).json({
-      msg: "Created",
+    return res.status(200).json({
+      msg: "Ok",
       data,
     });
   } catch (error) {
-    next(error);
+    return res.status(500).json({
+      msg: error.message,
+    });
   }
 });
 
 app.delete("/products/:id", async (req, res) => {
   try {
     await products.findByIdAndDelete(req.params.id);
-    return res.status(204).end();
+    return res.status(200).json({
+      msg: "Ok",
+    });
   } catch (error) {
-    next(error);
+    return res.status(500).json({
+      msg: error.message,
+    });
   }
 });
 
 // All Users
 app.get("/users", async (req, res) => {
   try {
-    const users = await users.find({}, "-password");
     return res.status(200).json({
       msg: "OK",
-      data: users,
+      data: allUser,
     });
   } catch (error) {
-    next(error);
+    return res.status(500).json({
+      msg: error.message,
+    });
   }
 });
 
 // Register a new user
 app.post("/register", async (req, res) => {
-  try {
-    const {
-      username,
-      password,
-      name,
-      email,
-      phone,
-      address,
-    } = req.body;
-
-    // Check if the username is already taken
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({
-        msg: "Username already exists",
+    try {
+      const { username, password } = req.body;
+  
+      // Check if the username is already taken
+      const existingUser = allUser.find((user) => user.username === username);
+      if (existingUser) {
+        return res.status(400).json({
+          msg: "Username already exists",
+        });
+      }
+  
+      // Generate a salt for password hashing (you can configure the number of rounds)
+      const saltRounds = 10;
+      const salt = bcrypt.genSaltSync(saltRounds);
+  
+      // Hash the password
+      const hashedPassword = bcrypt.hashSync(password, salt);
+  
+      // Create a new user with the hashed password
+      const newUser = {
+        username,
+        password: hashedPassword,
+        // Include other user properties as needed
+      };
+  
+      // Add the new user to your user data array
+      allUser.push(newUser);
+  
+      return res.status(200).json({
+        msg: "User registered successfully",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        msg: error.message,
       });
     }
-
-    // Generate a salt for password hashing (you can configure the number of rounds)
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Create a new user object with the hashed password and additional fields
-    const newUser = new User({
-      username,
-      password: hashedPassword,
-      name,
-      email,
-      phone,
-      address,
-    });
-
-    await newUser.save();
-
-    return res.status(201).json({
-      msg: "User registered successfully",
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Login
-app.post("/login", async (req, res) => {
-  try {
+  });
+  
+  // Login
+  app.post("/login", (req, res) => {
     const { username, password } = req.body;
-
+  
     // Check if username and password are present
     if (!username || !password) {
       return res.status(400).json({ msg: "Username and password are required" });
     }
-
-    // Find a user with the matching username
-    const user = await User.findOne({ username });
-
-    if (!user) {
-      return res.status(401).json({ msg: "Invalid username or password" });
-    }
-
-    // Compare the provided password with the stored hashed password
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (passwordMatch) {
-      return res.status(200).json({ msg: "Login successful" });
+  
+    // Find a user with the matching username and password
+    const matchedUser = allUser.find(
+      (user) =>
+        user.username.trim() === username.trim() &&
+        user.password.trim() === password.trim()
+    );
+  
+    if (matchedUser) {
+      // If a user is found, send back the userId
+      const userId = matchedUser.id;
+      res.status(200).json({ userId });
     } else {
-      return res.status(401).json({ msg: "Invalid username or password" });
+      // If no matching user is found, send an error response
+      res.status(401).json({ msg: "Invalid username or password" });
     }
-  } catch (error) {
-    next(error);
-  }
-});
+  });
 
 app.get("/user/:id", async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId);
+    // Convert userId to an integer
+    const id = parseInt(userId);
+
+    // Find the user by ID in the allUser array
+    const user = allUser.find((u) => u.id === id);
 
     if (!user) {
       return res.status(404).json({
@@ -192,7 +198,9 @@ app.get("/user/:id", async (req, res) => {
       data: user,
     });
   } catch (error) {
-    next(error);
+    return res.status(500).json({
+      msg: error.message,
+    });
   }
 });
 
