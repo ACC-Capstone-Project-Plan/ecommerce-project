@@ -243,8 +243,11 @@ app.delete("/users/:userId", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
+  console.log("Received login request with username:", username);
+
   // Check if username and password are present
   if (!username || !password) {
+    console.log("Invalid username or password provided");
     return res.status(400).json({ msg: "Username and password are required" });
   }
 
@@ -253,6 +256,7 @@ app.post("/login", async (req, res) => {
     const matchedUser = allUser.find((user) => user.username.trim() === username.trim());
 
     if (!matchedUser) {
+      console.log("User not found");
       return res.status(401).json({ msg: "Invalid username or password" });
     }
 
@@ -262,8 +266,10 @@ app.post("/login", async (req, res) => {
     if (isPasswordMatch) {
       // If passwords match, send back the userId
       const userId = matchedUser.id;
+      console.log("User logged in successfully with ID:", userId);
       return res.status(200).json({ userId });
     } else {
+      console.log("Invalid password");
       return res.status(401).json({ msg: "Invalid username or password" });
     }
   } catch (error) {
@@ -271,6 +277,7 @@ app.post("/login", async (req, res) => {
     return res.status(500).json({ msg: "An error occurred" });
   }
 });
+
 
 app.get("/user/:id", async (req, res) => {
   try {
