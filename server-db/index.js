@@ -150,29 +150,36 @@ app.get("/users", async (req, res) => {
 
 // Login
 app.post("/login", (req, res) => {
-    const { username, password } = req.body;
-  
-    // Check if username and password are present
-    if (!username || !password) {
-      return res.status(400).json({ msg: "Username and password are required" });
-    }
-  
-    // Find a user with the matching username and password
-    const matchedUser = allUser.find(
-      (user) =>
-        user.username.trim() === username.trim() &&
-        user.password.trim() === password.trim()
-    );
-  
-    if (matchedUser) {
-      // If a user is found, send back the userId
+  const { username, password } = req.body;
+
+  // Check if username and password are present
+  if (!username || !password) {
+    return res.status(400).json({ msg: "Username and password are required" });
+  }
+
+  // Find a user with the matching username
+  const matchedUser = allUser.find(
+    (user) =>
+      user.username.trim() === username.trim()
+  );
+
+  if (matchedUser) {
+    // Check the password using bcrypt
+    const passwordMatch = bcrypt.compareSync(password, matchedUser.password);
+
+    if (passwordMatch) {
+      // If the username and password match, send back the userId
       const userId = matchedUser.id;
       res.status(200).json({ userId });
     } else {
-      // If no matching user is found, send an error response
-      res.status(401).json({ msg: "Invalid username or password" });
+      // If the password does not match, send an error response
+      res.status(401).json({ msg: "Invalid password" });
     }
-  });
+  } else {
+    // If no matching user is found, send an error response
+    res.status(401).json({ msg: "Invalid username" });
+  }
+});
   
 
   app.get("/user/:id", async (req, res) => {
