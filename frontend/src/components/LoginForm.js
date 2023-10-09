@@ -34,11 +34,11 @@ function LoginForm({ onLogin }) {
     event.preventDefault();
 
     try {
-      const response = await login(loginData);
+      const response = await login(loginData.username, loginData.password);
 
-      if (response.success) {
+      if (response.userId) {
         // Call the function for successful login
-        handleLoginSuccess(response.user);
+        handleLoginSuccess(response);
       } else {
         setError("Login failed. Please check your credentials.");
       }
