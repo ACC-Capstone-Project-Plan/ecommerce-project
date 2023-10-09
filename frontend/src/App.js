@@ -104,7 +104,7 @@ function App() {
             path="/login"
             render={(props) => <LoginForm {...props} onLogin={handleLogin} />}
           />
-          <Route path="/user/:userId" component={Profile} />
+          <Route path="/user/:userId" render={(props) => <Profile user={user} />} />
           <Route path="/cart">
             <Cart
               cart={cart}
