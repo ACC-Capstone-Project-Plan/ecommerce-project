@@ -35,12 +35,19 @@ const RegistrationForm = ({ onRegister }) => {
     }
 
     try {
-      const response = await fetch("https://ecommerce-acc-api.onrender.com/register", {
+      const response = await fetch("/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData), // Send the entire formData object
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+        }),
       });
 
       if (response.ok) {
