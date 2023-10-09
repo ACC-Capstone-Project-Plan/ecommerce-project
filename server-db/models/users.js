@@ -1,19 +1,10 @@
-const bcrypt = require('bcrypt');
-
-// Helper function to hash passwords
-function hashPassword(password) {
-  const saltRounds = 10;
-  const salt = bcrypt.genSaltSync(saltRounds);
-  return bcrypt.hashSync(password, salt);
-}
-
 const allUser = [
   {
     address: {},
     id: 1,
     email: "john@gmail.com",
     username: "johnd",
-    password: hashPassword("m38rmF$"),
+    password: "m38rmF$",
     name: {
       firstname: "john",
       lastname: "doe",
@@ -35,7 +26,7 @@ const allUser = [
     id: 2,
     email: "morrison@gmail.com",
     username: "mor_2314",
-    password: hashPassword("83r5^_"),
+    password: "83r5^_",
     name: {
       firstname: "david",
       lastname: "morrison",
@@ -57,7 +48,7 @@ const allUser = [
     id: 3,
     email: "kevin@gmail.com",
     username: "kevinryan",
-    password: hashPassword("kev02937@"),
+    password: "kev02937@",
     name: {
       firstname: "kevin",
       lastname: "ryan",
@@ -79,7 +70,7 @@ const allUser = [
     id: 4,
     email: "don@gmail.com",
     username: "donero",
-    password: hashPassword("ewedon"),
+    password: "ewedon",
     name: {
       firstname: "don",
       lastname: "romer",
@@ -101,7 +92,7 @@ const allUser = [
     id: 5,
     email: "derek@gmail.com",
     username: "derek",
-    password: hashPassword("jklg*_56"),
+    password: "jklg*_56",
     name: {
       firstname: "derek",
       lastname: "powell",
@@ -123,7 +114,7 @@ const allUser = [
     id: 6,
     email: "david_r@gmail.com",
     username: "david_r",
-    password: hashPassword("3478*#54"),
+    password: "3478*#54",
     name: {
       firstname: "david",
       lastname: "russell",
@@ -145,7 +136,7 @@ const allUser = [
     id: 7,
     email: "miriam@gmail.com",
     username: "snyder",
-    password: hashPassword("f238&@*$"),
+    password: "f238&@*$",
     name: {
       firstname: "miriam",
       lastname: "snyder",
@@ -167,7 +158,7 @@ const allUser = [
     id: 8,
     email: "william@gmail.com",
     username: "hopkins",
-    password: hashPassword("William56$hj"),
+    password: "William56$hj",
     name: {
       firstname: "william",
       lastname: "hopkins",
@@ -189,7 +180,7 @@ const allUser = [
     id: 9,
     email: "kate@gmail.com",
     username: "kate_h",
-    password: hashPassword("kfejk@*_"),
+    password: "kfejk@*_",
     name: {
       firstname: "kate",
       lastname: "hale",
@@ -211,7 +202,7 @@ const allUser = [
     id: 10,
     email: "jimmie@gmail.com",
     username: "jimmie_k",
-    password: hashPassword("klein*#%*"),
+    password: "klein*#%*",
     name: {
       firstname: "jimmie",
       lastname: "klein",
