@@ -18,8 +18,9 @@ const LoginForm = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
+      console.log('Request Data:', formData);
       const response = await fetch("https://ecommerce-acc-api.onrender.com/login", {
         method: "POST",
         headers: {
@@ -27,12 +28,14 @@ const LoginForm = ({ onLogin }) => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
-        handleLoginSuccess(data.userId); // Call the success handler
+        console.log('Response Data:', data);
+        handleLoginSuccess(data.userId);
       } else {
         const errorData = await response.json();
+        console.error('Error Response:', errorData);
         setError(errorData.msg || "An error occurred");
       }
     } catch (error) {
@@ -40,7 +43,7 @@ const LoginForm = ({ onLogin }) => {
       setError("An error occurred");
     }
   };
-
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
