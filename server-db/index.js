@@ -272,6 +272,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
 app.get("/user/:id", async (req, res) => {
   try {
     const userId = req.params.id;
