@@ -1,14 +1,22 @@
-const BASE_URL = 'https://ecommerce-acc-api.onrender.com/';
+const apiUrl = 'https://ecommerce-acc-api.onrender.com/';
+
 
 async function fetchProductList() {
   try {
-    const response = await fetch(`${BASE_URL}/`);
+    const response = await fetch(apiUrl);
+    
     if (!response.ok) {
       throw new Error(`Request failed with status: ${response.status}`);
     }
+    
     const data = await response.json();
-    setProducts(data.data);
+    displayProductList(data);
   } catch (error) {
-    console.error("Error fetching product list:", error);
+    console.error('Error fetching product list:', error);
   }
 }
+
+function displayProductList(products) {
+}
+
+fetchProductList();

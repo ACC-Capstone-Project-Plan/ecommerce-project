@@ -239,31 +239,40 @@ app.delete("/users/:userId", async (req, res) => {
   }
 });
 
-  // Login
-  app.post("/login", (req, res) => {
-    const { username, password } = req.body;
+// Login
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
 
-    // Check if username and password are present
-    if (!username || !password) {
-      return res.status(400).json({ msg: "Username and password are required" });
+  // Check if username and password are present
+  if (!username || !password) {
+    return res.status(400).json({ msg: "Username and password are required" });
+  }
+
+  // Find a user with the matching username
+  const user = allUser.find((user) => user.username.trim() === username.trim());
+
+  if (!user) {
+    // If no matching user is found, send an error response
+    return res.status(401).json({ msg: "Invalid username or password" });
+  }
+
+  try {
+    // Compare the provided password with the hashed password in the user data
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      // If passwords do not match, send an error response
+      return res.status(401).json({ msg: "Invalid username or password" });
     }
 
-    // Find a user with the matching username and password
-    const matchedUser = allUser.find(
-      (user) =>
-        user.username.trim() === username.trim() &&
-        user.password.trim() === password.trim()
-    );
-
-    if (matchedUser) {
-      // If a user is found, send back the userId
-      const userId = matchedUser.id;
-      res.status(200).json({ userId });
-    } else {
-      // If no matching user is found, send an error response
-      res.status(401).json({ msg: "Invalid username or password" });
-    }
-  });
+    // If passwords match, send back the userId
+    const userId = user.id;
+    res.status(200).json({ userId });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Internal server error" });
+  }
+});
 
 app.get("/user/:id", async (req, res) => {
   try {
