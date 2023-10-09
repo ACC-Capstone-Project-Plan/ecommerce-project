@@ -18,7 +18,7 @@ const LoginForm = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       console.log('Request Data:', formData);
       const response = await fetch("https://ecommerce-acc-api.onrender.com/login", {
@@ -28,7 +28,7 @@ const LoginForm = ({ onLogin }) => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log('Response Data:', data);
