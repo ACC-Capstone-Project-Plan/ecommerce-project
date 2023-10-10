@@ -1,8 +1,7 @@
 const apiUrl = 'https://ecommerce-acc-api.onrender.com/';
-
 async function login(loginData) {
   try {
-    const response = await fetch(`${apiUrl}/login`, {
+    const response = await fetch(`${apiUrl}login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -15,7 +14,7 @@ async function login(loginData) {
     }
 
     const data = await response.json();
-    return { success: true, user: data }; // Assuming your server returns user data
+    return { success: true, user: data };
   } catch (error) {
     return { success: false, error: 'An error occurred during login.' };
   }
@@ -37,7 +36,7 @@ async function fetchProductList() {
 }
 
 function displayProductList(products) {
-  // Implement the logic to display product data here
 }
 
 export { login, fetchProductList };
+ 

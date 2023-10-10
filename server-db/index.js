@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 
 require("dotenv").config();
@@ -12,7 +12,7 @@ const connectDB = require("./connectMongo");
 connectDB();
 
 const products = require("./models/products");
-const allUser = require("./models/users")
+const allUser = require("./models/users");
 
 // Use the 'cors' middleware to enable CORS
 app.use(cors());
@@ -101,52 +101,51 @@ app.delete("/products/:id", async (req, res) => {
 
 // All Users
 app.get("/users", async (req, res) => {
-    try {
-      return res.status(200).json({
-        msg: "OK",
-        data: allUser,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        msg: error.message,
-      });
-    }
-  });
+  try {
+    return res.status(200).json({
+      msg: "OK",
+      data: allUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: error.message,
+    });
+  }
+});
 
-  app.post("/register", async (req, res) => {
-    try {
-      const { username, password } = req.body;
-  
-      // Check if the username is already taken
-      const existingUser = allUser.find(user => user.username === username);
-      if (existingUser) {
-        return res.status(400).json({
-          msg: "Username already exists",
-        });
-      }
-  
-      // Hash the password before saving it to the database
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
-      // Create a new user object
-      const newUser = {
-        username,
-        password: hashedPassword,
-      };
-  
-      // Add the new user to the allUser array (or save it to your database)
-      allUser.push(newUser);
-  
-      return res.status(200).json({
-        msg: "User registered successfully",
-      });
-    } catch (error) {
-      return res.status(500).json({
-        msg: error.message,
+app.post("/register", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Check if the username is already taken
+    const existingUser = allUser.find((user) => user.username === username);
+    if (existingUser) {
+      return res.status(400).json({
+        msg: "Username already exists",
       });
     }
-  });
-  
+
+    // Hash the password before saving it to the database
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new user object
+    const newUser = {
+      username,
+      password: hashedPassword,
+    };
+
+    // Add the new user to the allUser array (or save it to your database)
+    allUser.push(newUser);
+
+    return res.status(200).json({
+      msg: "User registered successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: error.message,
+    });
+  }
+});
 
 // Login
 app.post("/login", (req, res) => {
@@ -158,19 +157,15 @@ app.post("/login", (req, res) => {
   }
 
   // Find a user with the matching username
-  const matchedUser = allUser.find(
-    (user) =>
-      user.username.trim() === username.trim()
-  );
+  const matchedUser = allUser.find((user) => user.username === username);
 
   if (matchedUser) {
     // Check the password using bcrypt
     const passwordMatch = bcrypt.compareSync(password, matchedUser.password);
 
     if (passwordMatch) {
-      // If the username and password match, send back the userId
-      const userId = matchedUser.id;
-      res.status(200).json({ userId });
+      // If the username and password match, send back the user data
+      res.status(200).json({ user: matchedUser });
     } else {
       // If the password does not match, send an error response
       res.status(401).json({ msg: "Invalid password" });
@@ -180,35 +175,32 @@ app.post("/login", (req, res) => {
     res.status(401).json({ msg: "Invalid username" });
   }
 });
-  
 
-  app.get("/user/:id", async (req, res) => {
-    try {
-      const userId = req.params.id;
-      // Convert userId to an integer
-      const id = parseInt(userId);
-  
-      // Find the user by ID in the allUser array
-      const user = allUser.find((u) => u.id === id);
-  
-      if (!user) {
-        return res.status(404).json({
-          msg: "User not found",
-        });
-      }
-  
-      return res.status(200).json({
-        msg: "OK",
-        data: user,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        msg: error.message,
+app.get("/user/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    // Convert userId to an integer
+    const id = parseInt(userId);
+
+    // Find the user by ID in the allUser array
+    const user = allUser.find((u) => u.id === id);
+
+    if (!user) {
+      return res.status(404).json({
+        msg: "User not found",
       });
     }
-  });
-  
-  
+
+    return res.status(200).json({
+      msg: "OK",
+      data: user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      msg: error.message,
+    });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
 

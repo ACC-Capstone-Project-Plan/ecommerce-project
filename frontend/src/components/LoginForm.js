@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { login } from "../api/api"; // Assuming you have an API module that handles API requests
+import { login } from "../api/api";
 
 function LoginForm({ onLogin }) {
   const [loginData, setLoginData] = useState({
@@ -34,9 +34,10 @@ function LoginForm({ onLogin }) {
     event.preventDefault();
 
     try {
-      const response = await login(loginData); // Make a POST request to your server's /login endpoint
+      // Make a POST request to the server's /login endpoint
+      const response = await login(loginData);
 
-      if (response.ok) {
+      if (response.status === 200) {
         // If login is successful, call the function for successful login
         handleLoginSuccess(response.data); // Assuming your server returns user data including a token
       } else {
